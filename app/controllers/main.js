@@ -56,13 +56,11 @@ function deleteProduct(id) {
 getEle("btnThemNguoiDung").addEventListener("click", function () {
     //Sửa Title
     document.getElementsByClassName("modal-title")[0].innerHTML = "Thêm người dùng";
-
     //Tạo nút "Add"
-    var btnAdd = `<button class="btn btn-success" onclick="add()">Add</button>`;
+    var btnAdd = `<button class="btn btn-success" onclick="add(true)">Add</button>`;
     document.getElementsByClassName("modal-footer")[0].innerHTML = btnAdd;
 });
-function add() {
-
+function add(isAdd) {
     var taiKhoan = getEle("TaiKhoan").value;
     var hoTen = getEle("HoTen").value;
     var matKhau = getEle("MatKhau").value;
@@ -71,96 +69,86 @@ function add() {
     var ngonNgu = getEle("loaiNgonNgu").value;
     var moTa = getEle("MoTa").value;
     var hinhAnh = getEle("HinhAnh").value;
-
     var isValid = true;
-    //taiKhoan
-    isValid &= validation.kiemTraRong(
-        taiKhoan,
-        "tbTK",
-        "Vui lòng không để trống!"
-    )
-        && validation.kiemTraTaiKhoanTonTai(
+    if (isAdd) {
+        //taiKhoan
+        isValid &= validation.kiemTraRong(
             taiKhoan,
             "tbTK",
-            "Tài khoản đã tồn tại ! Vui lòng nhập tài khoản mới !"
-        );
-    //hoTen
-    isValid &= validation.kiemTraRong(
-        hoTen,
-        "tbHoten",
-        "Vui lòng không để trống!"
-    ) && validation.kiemTraKiTuChuoi(
-        hoTen,
-        "tbHoten",
-        "Vui lòng không nhập số và kí tự đặc biệt !"
-    );
-    //matKhau
-    isValid &= validation.kiemTraRong(
-        matKhau,
-        "tbMatKhau",
-        "Vui lòng không để trống!"
-    )
-        && validation.kiemTraMatKhau(
-            matKhau,
-            "tbMatKhau",
-            "Vui lòng nhập ít nhất 1 ký tự hoa, 1 ký tự đặc biệt, một kí tự số "
+            "Vui lòng không để trống!"
         )
-        && validation.kiemTraDoDaiKiTu(
+            && validation.kiemTraTaiKhoanTonTai(
+                taiKhoan,
+                "tbTK",
+                "Tài khoản đã tồn tại ! Vui lòng nhập tài khoản mới !"
+            );
+        //hoTen
+        isValid &= validation.kiemTraRong(
+            hoTen,
+            "tbHoten",
+            "Vui lòng không để trống!"
+        ) && validation.kiemTraKiTuChuoi(
+            hoTen,
+            "tbHoten",
+            "Vui lòng không nhập số và kí tự đặc biệt !"
+        );
+        //matKhau
+        isValid &= validation.kiemTraRong(
             matKhau,
             "tbMatKhau",
-            "Vui lòng nhập 6-8 ký tự !",
-            6,
-            8
-        );
-    //email
-    isValid &= validation.kiemTraRong(
-        email,
-        "tbEmail",
-        "Vui lòng không để trống!"
-    )
-        && validation.kiemTraEmail(
+            "Vui lòng không để trống!"
+        )
+        //email
+        isValid &= validation.kiemTraRong(
             email,
             "tbEmail",
-            "Vui lòng nhập đúng kiểu định dạng email!Vd: email@gmail.com"
+            "Vui lòng không để trống!"
+        )
+            && validation.kiemTraEmail(
+                email,
+                "tbEmail",
+                "Vui lòng nhập đúng kiểu định dạng email!Vd: email@gmail.com"
+            );
+        //ngonNgu
+        isValid &= validation.kiemTraLoaiNguoiDung(
+            "loaiNgonNgu",
+            "tbLoaiNgonNgu",
+            "Vui lòng chọn ngôn ngữ !"
+        )
+        //nguoiDung
+        isValid &= validation.kiemTraLoaiNguoiDung(
+            "loaiNguoiDung",
+            "tbLoaiNd",
+            "Vui lòng chọn loại người dùng !"
+        )
+        //moTa
+        isValid &= validation.kiemTraRong(
+            moTa,
+            "tbMoTa",
+            "Vui lòng không để trống!"
+        )
+            && validation.kiemTraDoDaiKiTu(
+                matKhau,
+                "tbMatKhau",
+                "Vui lòng nhập không quá 60 ký tự !",
+                1,
+                60
+            );;
+        //hinhAnh
+        isValid &= validation.kiemTraRong(
+            hinhAnh,
+            "tbHinhAnh",
+            "Vui lòng không để trống!"
         );
-    //ngonNgu
-    isValid &= validation.kiemTraLoaiNguoiDung(
-        "loaiNgonNgu",
-        "tbLoaiNgonNgu",
-        "Vui lòng chọn ngôn ngữ !"
-    )
-    //nguoiDung
-    isValid &= validation.kiemTraLoaiNguoiDung(
-        "loaiNguoiDung",
-        "tbLoaiNd",
-        "Vui lòng chọn loại người dùng !"
-    )
-    //moTa
-    isValid &= validation.kiemTraRong(
-        moTa,
-        "tbMoTa",
-        "Vui lòng không để trống!"
-    )
-        && validation.kiemTraDoDaiKiTu(
-            matKhau,
-            "tbMatKhau",
-            "Vui lòng nhập không quá 60 ký tự !",
-            1,
-            60
-        );;
-    //hinhAnh
-    isValid &= validation.kiemTraRong(
-        hinhAnh,
-        "tbHinhAnh",
-        "Vui lòng không để trống!"
-    );
+    }
+
     if (!isValid) return null;
-    var product = new Products("", taiKhoan, hoTen, matKhau, email, loaiND, ngonNgu, moTa, hinhAnh,);
+    var product = new Products("", taiKhoan, hoTen, matKhau, email, loaiND, ngonNgu, moTa, hinhAnh);
 
     services
         .addProduct(product)
         .then(function () {
-            fetchData();
+            fetchData(true);
             document.getElementsByClassName("close")[0].click();
         })
         .catch(function (error) {
